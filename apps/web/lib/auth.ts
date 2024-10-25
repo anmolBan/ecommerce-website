@@ -3,24 +3,61 @@ import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { signIn } from "next-auth/react";
 import GoogleProvider from "next-auth/providers/google";
+import { customerSigninSchema } from "@repo/zod-types/zod-types";
+import prisma from "@repo/db/client";
+import bcrypt from "bcrypt";
 
 export const authOptions = {
     providers: [
         CredentialsProvider({
             name: "Credentials",
             credentials: {
-                username: { label: "Email", type: "text", placeholder: "jondoe@example.com" },
+                email: { label: "Email", type: "text", placeholder: "jondoe@example.com" },
                 password: { label: "Password", type: "password" }
             },
-            async authorize(credentials) {
+            async authorize(credentials: Record<"email" | "password", string> | undefined) {
                 if(!credentials){
                     return null;
                 }
 
-                return{
-                    id: "1",
-                    name: "anmol",
-                    phone: "8954834499"
+                const loginCredentials = {
+                    email: credentials.email,
+                    password: credentials.password
+                }
+
+                const parsedCredentials = customerSigninSchema.safeParse(loginCredentials);
+
+                if(!parsedCredentials.success){
+                    throw new Error("Invalid inputs")
+                }
+
+                try{
+                    const existingUser = await prisma.customer.findUnique({
+                        where: {
+                            email: credentials.email
+                        }
+                    });
+
+                    if(!existingUser){
+                        throw new Error("Incorrect username or password");
+                    }
+
+                    const passwordValidation = await bcrypt.compare(credentials.password, existingUser.passwordHash);
+
+                    if(!passwordValidation){
+                        throw new Error("Incorrect password");
+                    }
+
+                    return {
+                        id: existingUser.id.toString(),
+                        name: existingUser.firstName + " " + existingUser.lastName,
+                        phone: existingUser.phoneNumber,
+                        email: existingUser.email
+                    }
+
+                } catch(error : any){
+                    console.log(error);
+                    throw new Error(error.message || "Login failed please tyr again later...")
                 }
             }
         }),

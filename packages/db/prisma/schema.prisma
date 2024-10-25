@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id           Int         @id @default(autoincrement())
+  firstName    String
+  lastName     String
+  email        String       @unique
+  passwordHash String
+  phoneNumber  String
+  address      String?
+  city         String?
+  state        String?
+  country      String?
+  zipCode      String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  orders       Order[]
+  reviews      Review[]
+  cart         ShoppingCart?
+
+  @@map("customers")
+}
+
+model Product {
+  id          Int          @id @default(autoincrement())
+  name        String
+  description String?
+  price       Decimal
+  stock       Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  category    Category     @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+
+  orderItems  OrderItem[]
+  reviews     Review[]
+  images      ProductImage[]
+  cartItems   CartItem[]
+
+  @@map("products")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Order {
+  id              Int           @id @default(autoincrement())
+  orderDate       DateTime      @default(now())
+  status          String
+  totalAmount     Decimal
+  shippingAddress String
+  shippingCity    String
+  shippingState   String
+  shippingCountry String
+  shippingZipCode String
+
+  customer        Customer      @relation(fields: [customerId], references: [id])
+  customerId      Int
+
+  items           OrderItem[]
+  payment         Payment?
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  quantity  Int
+  price     Decimal
+
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   Int
+
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+
+  @@map("order_items")
+}
+
+model Payment {
+  id            Int        @id @default(autoincrement())
+  paymentDate   DateTime   @default(now())
+  amount        Decimal
+  paymentMethod String
+  status        String
+
+  order         Order      @relation(fields: [orderId], references: [id])
+  orderId       Int        @unique
+
+  @@map("payments")
+}
+
+model Review {
+  id           Int       @id @default(autoincrement())
+  rating       Int
+  reviewText   String?
+  reviewDate   DateTime  @default(now())
+
+  product      Product   @relation(fields: [productId], references: [id])
+  productId    Int
+
+  customer     Customer  @relation(fields: [customerId], references: [id])
+  customerId   Int
+
+  @@map("reviews")
+}
+
+model ShoppingCart {
+  id           Int       @id @default(autoincrement())
+
+  customer     Customer  @relation(fields: [customerId], references: [id])
+  customerId   Int       @unique
+
+  items        CartItem[]
+
+  @@map("shopping_cart")
+}
+
+model CartItem {
+  id           Int       @id @default(autoincrement())
+  quantity     Int
+
+  cart         ShoppingCart  @relation(fields: [cartId], references: [id])
+  cartId       Int
+
+  product      Product   @relation(fields: [productId], references: [id])
+  productId    Int
+
+  @@map("cart_items")
+}
+
+model ProductImage {
+  id        Int      @id @default(autoincrement())
+  imageUrl  String
+
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+
+  @@map("product_images")
+}

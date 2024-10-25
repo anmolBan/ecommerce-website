@@ -27,6 +27,7 @@ export default function ({}: Props) {
     });
 
     if(res?.error){
+      console.log(res.error);
       setError(res.error);
     } else{
       router.push("/");
@@ -44,10 +45,10 @@ export default function ({}: Props) {
       </div>
       <div className='w-96 my-4'>
         <div className='my-2'>
-          <Input onChange={(e) => setEmail(e.target.value)} type='email' placeholder='Email'/>
+          <Input className={error === "Incorrect username or password" ? "border-red-500 bg-red-200" : ""} onChange={(e) => setEmail(e.target.value)} type='email' placeholder='Email'/>
         </div>
         <div className='my-2'>
-          <Input onChange={(e) => setPassword(e.target.value)} type='password' placeholder='Password' />
+          <Input className={error === ("Incorrect username or password" || "Incorrect password") ? "border-red-500 bg-red-200" : ""} onChange={(e) => setPassword(e.target.value)} type='password' placeholder='Password' />
         </div>
         <div className='my-2'>
           <Button onClick={onClickSignInButtonHandler} type="submit" size={"mine"}>Sign in with Email</Button>
