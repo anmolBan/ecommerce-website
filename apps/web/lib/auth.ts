@@ -1,7 +1,6 @@
 import { Session, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { signIn } from "next-auth/react";
 import GoogleProvider from "next-auth/providers/google";
 import { customerSigninSchema } from "@repo/zod-types/zod-types";
 import prisma from "@repo/db/client";
@@ -28,6 +27,7 @@ export const authOptions = {
                 const parsedCredentials = customerSigninSchema.safeParse(loginCredentials);
 
                 if(!parsedCredentials.success){
+                    console.log(parsedCredentials.error);
                     throw new Error("Invalid inputs")
                 }
 

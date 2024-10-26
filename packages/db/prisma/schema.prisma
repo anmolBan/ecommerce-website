@@ -19,7 +19,7 @@ model Customer {
   lastName     String
   email        String       @unique
   passwordHash String
-  phoneNumber  String
+  phoneNumber  String       @unique
   address      String?
   city         String?
   state        String?

@@ -14,6 +14,7 @@ export default function ({}: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const router = useRouter();
 
