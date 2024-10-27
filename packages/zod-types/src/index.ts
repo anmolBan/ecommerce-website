@@ -9,11 +9,11 @@ export const customerSigninSchema = zod.object({
 export type CustomerSigninSchema = zod.infer<typeof customerSigninSchema>;
 
 export const customerSignupSchema = zod.object({
-    firstName: zod.string(),
-    lastName: zod.string(),
-    email: zod.string(),
-    phone: zod.string(),
-    password: zod.string()
+    firstName: zod.string().min(3).max(25),
+    lastName: zod.string().min(3).max(25),
+    email: zod.string().email(),
+    phone: zod.string().length(10),
+    password: zod.string().min(8).max(15)
 });
 
 export type CustomerSignupType = zod.infer<typeof customerSignupSchema>;

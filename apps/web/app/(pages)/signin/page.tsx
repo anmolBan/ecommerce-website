@@ -6,6 +6,7 @@ import { signIn } from 'next-auth/react'
 import React, { useState } from 'react'
 import { useRouter } from "next/navigation";
 import { FcGoogle } from 'react-icons/fc'
+import Image from 'next/image'
 
 type Props = {}
 
@@ -38,37 +39,42 @@ export default function ({}: Props) {
   
   return (
     <div className='h-full w-full flex flex-col justify-center items-center'>
-      <div className='text-3xl font-bold mb-3'>
-        Log into your accout
+      <div className='absolute mb-96'>
+        <Image src="/logo.png" alt="App Logo" width={200} height={200} />  {/* Adjust size as needed */}
       </div>
-      <div className='text-sm'>
-        Enter your email and password below to log into your account
-      </div>
-      <div className='w-96 my-4'>
-        <div className='my-2'>
-          <Input className={error === "Incorrect username or password" ? "border-red-500 bg-red-200" : ""} onChange={(e) => setEmail(e.target.value)} type='email' placeholder='Email'/>
+      <div className='border rounded-lg p-24'>
+        <div className='text-3xl font-bold mb-3 text-center'>
+          Log into your accout
         </div>
-        <div className='my-2'>
-          <Input className={error === ("Incorrect username or password" || "Incorrect password") ? "border-red-500 bg-red-200" : ""} onChange={(e) => setPassword(e.target.value)} type='password' placeholder='Password' />
+        <div className='text-sm'>
+          Enter your email and password below to log into your account
         </div>
-        <div className='my-2'>
-          <Button onClick={onClickSignInButtonHandler} type="submit" size={"mine"}>Sign in with Email</Button>
+        <div className='w-96 my-4'>
+          <div className='my-2'>
+            <Input className={error === "Incorrect username or password" ? "border-red-500 bg-red-300 text-black" : ""} onChange={(e) => setEmail(e.target.value)} type='email' placeholder='Email'/>
+          </div>
+          <div className='my-2'>
+            <Input className={error === ("Incorrect username or password" || "Incorrect password") ? "border-red-500 bg-red-300 text-black" : ""} onChange={(e) => setPassword(e.target.value)} type='password' placeholder='Password' />
+          </div>
+          <div className='my-2'>
+            <Button onClick={onClickSignInButtonHandler} type="submit" size={"mine"}>Sign in with Email</Button>
+          </div>
         </div>
-      </div>
-      <div className="w-96 flex items-center justify-center mb-6">
-        <div className="h-px bg-slate-300 w-full"></div>
-        <span className="px-3 text-gray-300 text-xs whitespace-nowrap">OR CONTINUE WITH</span>
-        <div className="h-px bg-gray-300 w-full"></div>
-      </div>
-      <div className='w-96'>
-        {/* <ButtonWithIcon onClick={signIn}/> */}
-        <Button onClick={(e) => {
-          e.preventDefault();
-          signIn("google", { callbackUrl: "/" });
-        }} variant={"outline"} size={"mine"}>
-          <FcGoogle className="mr-2 h-5 w-5" />
-          Login with Google
-        </Button>
+        <div className="w-96 flex items-center justify-center mb-6">
+          <div className="h-px bg-slate-300 w-full"></div>
+          <span className="px-3 text-gray-300 text-xs whitespace-nowrap">OR CONTINUE WITH</span>
+          <div className="h-px bg-gray-300 w-full"></div>
+        </div>
+        <div className='w-96'>
+          {/* <ButtonWithIcon onClick={signIn}/> */}
+          <Button onClick={(e) => {
+            e.preventDefault();
+            signIn("google", { callbackUrl: "/" });
+          }} variant={"outline"} size={"mine"}>
+            <FcGoogle className="mr-2 h-5 w-5" />
+            Login with Google
+          </Button>
+        </div>
       </div>
     </div>
   )

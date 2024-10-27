@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { customerSignup } from "@/lib/actions/customerSignup";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -33,6 +34,9 @@ export default function({}: Props){
 
     return (
         <div className="h-full w-full flex flex-col justify-center items-center">
+            <div className='absolute mb-96'>
+                <Image src="/logo.png" alt="App Logo" width={200} height={200} />  {/* Adjust size as needed */}
+            </div>
             <div className='text-3xl font-bold mb-3'>
                 Create an account
             </div>
